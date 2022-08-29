@@ -7,43 +7,18 @@ import com.navi.mymoney.AssetClass;
 public class Allocation {
     private AssetClass[] assets;
     private float total;
-    // private float[] originalAllocationPercentage;
 
-    //  AMOUNT_EQUITY AMOUNT_DEBT AMOUNT_GOLD
     public Allocation(AssetClassType[] types, float[] amounts) {
-        // System.out.println("new alloc");
         int assetClassCount = types.length;
         assets = new AssetClass[3];
         this.total = 0;
 
         for(int i = 0; i < assetClassCount; i++) {
             this.assets[i] = new AssetClass(types[i], amounts[i]);
-            // this.total += amounts[i];
         }
 
         this.updateTotal();
-        // this.originalAllocationPercentage = getAllocationPercentage();
     }
-
-    // public void setOriginalAllocationPercentage() {
-    //     this.originalAllocationPercentage = this.getAllocationPercentage();
-    // }
-
-    // private float[] getAllocationPercentage() {
-    //     int totalAssetCount = this.assets.length; 
-    //     float[] split = new float[totalAssetCount];
-
-    //     for(int i = 0; i < totalAssetCount; i++) {
-    //         System.out.println(this.assets[i].getValue());
-    //         System.out.println(this.total);
-
-    //         split[i] = (this.assets[i].getValue()/this.total)*100;
-
-    //         System.out.println(split[i]);
-    //     }
-
-    //     return split;
-    // }
 
     private void updateTotal() {
         int totalAssetCount = this.assets.length; 
@@ -67,7 +42,7 @@ public class Allocation {
         this.updateTotal();
     }
 
-    public void reduceAmount(AssetClassType type, float amount) {
+    public void reduceAmount(AssetClassType type, float amount) throws Exception {
         int totalAssetCount = this.assets.length; 
 
         for(int i = 0; i < totalAssetCount; i++) {
@@ -78,7 +53,7 @@ public class Allocation {
                     this.assets[i].setValue(currentAmount - amount);
                 }
                 else {
-                    // throw error
+                    throw new Exception("ASSET_VALUE_LESS_THAN_ZERO");
                 }
             }
         }
@@ -115,29 +90,20 @@ public class Allocation {
     public void rebalance(float[] initialAllocation) {
         int totalAssetCount = this.assets.length; 
         float total = this.total;
-        // System.out.println("total");
-        // System.out.println(total);
-
         float totalInitAllocation = 0;
+
         for (float x : initialAllocation) {
-            // System.out.println(x);
             totalInitAllocation += x;
         }
 
         for(int i = 0; i < totalAssetCount; i++) {
-            // float originalAllocation = this.originalAllocationPercentage[i];
-            // System.out.println("orig allo");
-            // System.out.println(originalAllocation);
-            float originalAllocation = (initialAllocation[i] / totalInitAllocation)*100;
-            // System.out.println(originalAllocation);
-            // System.out.println(total);
-            float rebalancedAmount = (originalAllocation * total)/100;
+            float originalAllocationPercent = (initialAllocation[i] / totalInitAllocation)*100;
+            float rebalancedAmount = (originalAllocationPercent * total)/100;
             this.setAmount(this.assets[i].getType(), rebalancedAmount);
         }
     }
 
     public float[] getAllocationAmounts() {
-        // System.out.println("Inside getAllocationAmounts");
         int totalAssetCount = this.assets.length; 
         float[] amounts = new float[totalAssetCount];
 

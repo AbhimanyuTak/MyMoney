@@ -6,7 +6,8 @@ public class AssetClass {
     private AssetClassType type; 
 
     public AssetClass(AssetClassType type, float value) {
-        this.value = value;
+        // Balances are always floored to the nearest integers.
+        this.value = (float)Math.floor(value);
         this.type = type;
     }
 
@@ -19,6 +20,7 @@ public class AssetClass {
     }
 
     public void setValue(float x) {
-        this.value = x;
+        // Balances are always floored to the nearest integers.
+        this.value = (float)Math.floor(x);
     }
 }

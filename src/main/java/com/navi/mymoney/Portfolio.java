@@ -30,7 +30,6 @@ public class Portfolio {
     // The allocation always happens from January, and SIP from February.
     private void allocateOnce(float[] amounts) {
         if(this.allocated != true) {
-            // System.out.println("Setting jan"); 
             Allocation allocation = this.monthlyAllocation.get(Month.JANUARY);
 
             if(allocation == null) {
@@ -50,20 +49,28 @@ public class Portfolio {
         }
     }
 
+    /**
+     * Formats the input and calls the applyChange method
+     * @param monthInput
+     * @param changesInput
+     */
     public void change(String monthInput, String[] changesInput) {
         float[] changes = new float[this.types.length];
         Month month = Month.valueOf(monthInput);
 
         for (int i = 0; i < changesInput.length; i++) {
             changes[i] = Float.parseFloat(changesInput[i]);
-            // pf.change(month, changes);
         }
 
         this.applyChange(month, changes);
     }
 
+    /**
+     * This methods is the gateway to apply monthly sip and then the changes to an allocation
+     * @param month
+     * @param changes
+     */
     private void applyChange(Month month, float[] changes) {
-        // this.applySip(amounts);
         Allocation currentAllocation = this.monthlyAllocation.get(month);
 
         if(currentAllocation == null) {
@@ -72,6 +79,7 @@ public class Portfolio {
         }
 
         // First Apply SIP towards the start of month
+        // SIP from February
         if(month != Month.JANUARY) {
             this.applySIP(month, currentAllocation, this.sipAmounts);
         }
@@ -79,8 +87,12 @@ public class Portfolio {
         this.calculateChange(currentAllocation, changes);
     }
 
+    /**
+     * Apply the value of percentage changes to the given allocation
+     * @param allocation
+     * @param changes
+     */
     private void calculateChange(Allocation allocation, float[] changes) {
-        // System.out.println("Inside calculateChange");
         for(int i = 0; i < this.types.length; i++) {
             float currentAmount = allocation.getAmount(this.types[i]);
             float amountAfterUpdate = currentAmount * (1 + (changes[i]/100));
@@ -88,6 +100,10 @@ public class Portfolio {
         }
     }
 
+    /**
+     * Sets the global SIP amounts for a portfolio
+     * @param amountInput
+     */
     public void sip(String[] amountInput) {
         float[] sipAmounts = new float[this.types.length];
         for (int i = 0; i < amountInput.length; i++) {
@@ -103,7 +119,10 @@ public class Portfolio {
         }
     }
 
-     // The allocation always happens from January, and SIP from February.
+    /**
+      * This method seeds the current month with the previous month with the exception to January
+      * @param month
+      */
     private void initCurrentMonth(Month month) {
         int lastMonthIndex = month.ordinal()-1;
 
@@ -133,13 +152,12 @@ public class Portfolio {
 
     // Balances are always floored to the nearest integers.
     private int[] fetchBalanceForCurrentMonth(Month month) {
-        // System.out.println("Inside balance");
         Allocation allocation = this.monthlyAllocation.get(month);
         float[] assetClassAmounts = allocation.getAllocationAmounts();
         int[] balances = new int[assetClassAmounts.length];
 
         for(int i = 0; i < assetClassAmounts.length; i++) {
-            balances[i] = Math.round(assetClassAmounts[i]);
+            balances[i] = (int)assetClassAmounts[i];
         }
 
         return balances;
@@ -156,7 +174,7 @@ public class Portfolio {
             return this.fetchBalanceForCurrentMonth(Month.JUNE);
         }
         else if(julyAllocation != null && juneAllocation != null){
-            Allocation decemberAllocation = this.monthlyAllocation.get(Month.JUNE);
+            Allocation decemberAllocation = this.monthlyAllocation.get(Month.DECEMBER);
             if(decemberAllocation != null) {
                 decemberAllocation.rebalance(this.initialAllocation);
                 return this.fetchBalanceForCurrentMonth(Month.DECEMBER);

@@ -12,17 +12,15 @@ public class Main {
             // the file to be opened for reading
             FileInputStream fis = new FileInputStream(args[0]);
             Scanner sc = new Scanner(fis); // file to be scanned
-            // returns true if there is another line to read
-
+            
+            // Initiate our portfolio
             AssetClassType[] types = {AssetClassType.EQUITY, AssetClassType.DEBT, AssetClassType.GOLD}; 
             Portfolio pf = new Portfolio(types);
 
+            // returns true if there is another line to read
             while (sc.hasNextLine()) {
-                //Add your code here to process input commands
                 String x = sc.nextLine();  // Read user input
-                // System.out.println(x);
                 String[] inputArr = x.split(" ", 6);
-
                 String command = inputArr[0];
 
                 switch(command) {
@@ -46,6 +44,7 @@ public class Main {
                         String[] changes = new String[types.length];
                         String month = inputArr[inputArr.length - 1];
 
+                        // Extract change percentage values
                         for (int i = 1; i < inputArr.length - 1; i++) {
                             changes[i-1] = inputArr[i].substring(0, inputArr[i].length() - 1);
                         }
@@ -53,7 +52,7 @@ public class Main {
                         pf.change(month, changes);
                         break;
                     case "BALANCE":
-                        String givenMonth = inputArr[inputArr.length - 1];
+                        String givenMonth = inputArr[1];
                         int[] b = pf.balance(givenMonth);
                         printIntArray(b);
                         break;
@@ -70,6 +69,7 @@ public class Main {
                   }
                 
             }
+
             sc.close(); // closes the scanner
         } catch (IOException e) {
             System.out.println(e.getMessage());
