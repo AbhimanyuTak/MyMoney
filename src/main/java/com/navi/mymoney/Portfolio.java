@@ -95,7 +95,8 @@ public class Portfolio {
     private void calculateChange(Allocation allocation, float[] changes) {
         for(int i = 0; i < this.types.length; i++) {
             float currentAmount = allocation.getAmount(this.types[i]);
-            float amountAfterUpdate = currentAmount * (1 + (changes[i]/100));
+            // Weird multiplication effects
+            float amountAfterUpdate = (float)((double)currentAmount * (double)(1 + (double)(changes[i]/100)));
             allocation.setAmount(this.types[i], amountAfterUpdate);
         }
     }

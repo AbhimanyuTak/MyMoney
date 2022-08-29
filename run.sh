@@ -5,9 +5,9 @@ mvn clean install -DskipTests assembly:single -q
 # mvn jacoco:report
 
 # echo "INPUT 1"
-# java -jar target/geektrust.jar sample_input/input1.txt
+java -jar target/geektrust.jar sample_input/input1.txt
 # echo "INPUT 2"
-java -jar target/geektrust.jar sample_input/input2.txt
+# java -jar target/geektrust.jar sample_input/input2.txt
 # echo "INPUT 3"
 # java -jar target/geektrust.jar sample_input/input3.txt
 # echo "INPUT 4"
